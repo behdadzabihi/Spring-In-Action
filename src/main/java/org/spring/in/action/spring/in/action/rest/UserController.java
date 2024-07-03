@@ -47,10 +47,10 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-//    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity delete(@RequestParam Long id){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> delete(@RequestParam Long id){
         userService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
 }

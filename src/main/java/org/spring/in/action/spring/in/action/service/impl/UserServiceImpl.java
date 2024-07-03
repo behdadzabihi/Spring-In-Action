@@ -5,8 +5,12 @@ import lombok.AllArgsConstructor;
 
 import org.spring.in.action.spring.in.action.dao.UserRepository;
 import org.spring.in.action.spring.in.action.model.User;
+import org.spring.in.action.spring.in.action.model.UserRole;
 import org.spring.in.action.spring.in.action.service.BaseService;
 
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -49,7 +53,14 @@ public class UserServiceImpl implements BaseService<User>, UserDetailsService {
 
     @Override
     public void deleteById(Long id) {
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = findByUsername(authentication.getName());
+        boolean isAdmin = currentUser.getUserRoles().stream()
+                .anyMatch(role -> "ADMIN".equals(role.getRole().getName()));
+        if (!isAdmin) {
+            throw new AccessDeniedException("Only users with the ADMIN role can delete other users.");
+        }
+        userRepository.deleteById(id);
     }
 
     public User findByUsername(String username) {
@@ -67,5 +78,9 @@ public class UserServiceImpl implements BaseService<User>, UserDetailsService {
         User user = userRepository.findByUsername(username);
         if(user == null) new UsernameNotFoundException("User not found with username: " + username);
         return user;
+    }
+
+    public List<UserRole> findUserRoles(String username){
+        return userRepository.findAllByUsername(username);
     }
 }

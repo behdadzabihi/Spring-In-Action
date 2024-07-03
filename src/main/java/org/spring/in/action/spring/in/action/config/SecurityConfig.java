@@ -3,6 +3,7 @@ package org.spring.in.action.spring.in.action.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -41,7 +42,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/user/save").permitAll()
+                .antMatchers("/api/user/**").permitAll()
+                .antMatchers("/api/role/**").permitAll()
+                .antMatchers("/api/user-role/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/admin/**").access("hasRole('ADMIN')")
                 .anyRequest().authenticated();
     }
 

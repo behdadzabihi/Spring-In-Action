@@ -6,13 +6,9 @@ import org.spring.in.action.spring.in.action.model.UserRole;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface UserRoleRepository extends CrudRepository<UserRole, Long> {
 
-  User findByUsername(String username);
-
-  List<UserRole> findAllByUsername(String username);
+    UserRole findByUserIdAndRoleId(Long userId, Long roleId);
   
 }
