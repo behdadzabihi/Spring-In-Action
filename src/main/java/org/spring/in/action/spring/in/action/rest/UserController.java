@@ -1,9 +1,14 @@
 package org.spring.in.action.spring.in.action.rest;
 
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.spring.in.action.spring.in.action.dto.UserDTO;
+import org.spring.in.action.spring.in.action.dto.UserRoleDTO;
 import org.spring.in.action.spring.in.action.mapper.UserMapper;
+import org.spring.in.action.spring.in.action.mapper.UserRoleMapper;
 import org.spring.in.action.spring.in.action.model.User;
+import org.spring.in.action.spring.in.action.model.UserRole;
 import org.spring.in.action.spring.in.action.service.impl.UserServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +22,12 @@ import java.util.List;
 @AllArgsConstructor
 public class UserController {
 
+    private static final Logger log = LogManager.getLogger(UserController.class);
     private  UserServiceImpl userService;
 
     private UserMapper  userMapper;
 
-
+    private UserRoleMapper userRoleMapper;
 
 
     @PostMapping("/save")
@@ -47,10 +53,18 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@RequestParam Long id){
         userService.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
+
+    @GetMapping("/find-by-user-id")
+    public ResponseEntity<List<UserRoleDTO>> findByUser(@RequestParam Long userID){
+        List<UserRole> userRoles=userService.findUserRolesByUserId(userID);
+        log.info(userRoles);
+        List<UserRoleDTO> userRoleDTOS=userRoleMapper.toUserRoleDTOS(userRoles);
+        return ResponseEntity.ok(userRoleDTOS);
+    }
 }

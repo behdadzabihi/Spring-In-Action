@@ -3,11 +3,16 @@ package org.spring.in.action.spring.in.action.service.impl;
 import javassist.NotFoundException;
 import lombok.AllArgsConstructor;
 
+import lombok.NoArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.spring.in.action.spring.in.action.dao.UserRepository;
+import org.spring.in.action.spring.in.action.dao.UserRoleRepository;
 import org.spring.in.action.spring.in.action.model.User;
 import org.spring.in.action.spring.in.action.model.UserRole;
 import org.spring.in.action.spring.in.action.service.BaseService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,18 +21,29 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class UserServiceImpl implements BaseService<User>, UserDetailsService {
 
+    private static final Logger log = LogManager.getLogger(UserServiceImpl.class);
+
+
+    @Autowired
     private UserRepository  userRepository;
 
-
+    @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserRoleServiceImpl userRoleService;
+
+    @Autowired
+    UserRoleRepository userRoleRepository;
 
     @Override
     public User save(User user) {
@@ -45,22 +61,25 @@ public class UserServiceImpl implements BaseService<User>, UserDetailsService {
     public User findById(Long id) {
         Optional<User> optionalUser=userRepository.findById(id);
         if(!optionalUser.isPresent()){
-//            throw new NotFoundException( "User not found with fullname " + optionalUser.get().getFullname());
-            System.out.println("error");
+            log.error( "User not found with fullname " + optionalUser.get().getFullname());
+
         }
         return optionalUser.get();
     }
 
     @Override
     public void deleteById(Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = findByUsername(authentication.getName());
-        boolean isAdmin = currentUser.getUserRoles().stream()
-                .anyMatch(role -> "ADMIN".equals(role.getRole().getName()));
-        if (!isAdmin) {
-            throw new AccessDeniedException("Only users with the ADMIN role can delete other users.");
+        User user=findById(id);
+        List<UserRole> userRoles=findUserRolesByUserId(user.getId());
+        if(userRoles.size()>0){
+            for(UserRole userRole:userRoles){
+                if(userRole.getRole().getName().equals("ADMIN")){
+                    userRepository.delete(user);
+                }
+                log.error("user :" +user.getUsername() + "has not permission to delete user");
+            }
+            log.error("User Roles is empty");
         }
-        userRepository.deleteById(id);
     }
 
     public User findByUsername(String username) {
@@ -80,7 +99,12 @@ public class UserServiceImpl implements BaseService<User>, UserDetailsService {
         return user;
     }
 
-    public List<UserRole> findUserRoles(String username){
-        return userRepository.findAllByUsername(username);
+//    @Transactional
+    public List<UserRole> findUserRolesByUserId(Long userId) {
+        return userRoleRepository.findByUserIdWithUser(userId);
     }
+
+//    public List<UserRole> findUserRoles(String username){
+//        return userRepository.findAllByUsername(username);
+//    }
 }

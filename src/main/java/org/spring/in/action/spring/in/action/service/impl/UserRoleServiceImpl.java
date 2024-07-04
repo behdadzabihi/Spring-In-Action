@@ -1,6 +1,8 @@
 package org.spring.in.action.spring.in.action.service.impl;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.spring.in.action.spring.in.action.dao.UserRoleRepository;
 import org.spring.in.action.spring.in.action.model.Role;
 import org.spring.in.action.spring.in.action.model.User;
@@ -9,6 +11,8 @@ import org.spring.in.action.spring.in.action.service.BaseService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+
 @Service
 @AllArgsConstructor
 public class UserRoleServiceImpl implements BaseService<UserRole> {
@@ -48,6 +52,10 @@ public class UserRoleServiceImpl implements BaseService<UserRole> {
     @Override
     public List<UserRole> findAll() {
         return null;
+    }
+
+    public List<UserRole> findByUserId(Long userID) {
+        return userRoleRepository.findByUserIdWithUser(userID);
     }
 
 

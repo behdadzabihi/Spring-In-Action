@@ -20,4 +20,11 @@ public class UserRole {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+
+    @Override
+    public String toString() {
+        return "UserRole [id=" + id + ", user=" + (user != null ? user.getId() : "null") + ", role=" + (role != null ? role.getName() : "null") + "]";
+    }
+
 }

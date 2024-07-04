@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -50,7 +51,7 @@ public class User implements UserDetails {
   private  String phoneNumber;
 
   @OneToMany(fetch = FetchType.LAZY,mappedBy = "user",cascade = CascadeType.ALL)
-  private Set<UserRole> userRoles;
+  private List<UserRole> userRoles;
 
 
   @Override
