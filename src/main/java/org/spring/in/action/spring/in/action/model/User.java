@@ -54,6 +54,7 @@ public class User implements UserDetails {
   private List<UserRole> userRoles;
 
 
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return null;

@@ -1,11 +1,8 @@
 package org.spring.in.action.spring.in.action.service.impl;
 
-import javassist.NotFoundException;
-import lombok.AllArgsConstructor;
-
-import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.mindrot.jbcrypt.BCrypt;
 import org.spring.in.action.spring.in.action.dao.UserRepository;
 import org.spring.in.action.spring.in.action.dao.UserRoleRepository;
 import org.spring.in.action.spring.in.action.model.User;
@@ -13,19 +10,14 @@ import org.spring.in.action.spring.in.action.model.UserRole;
 import org.spring.in.action.spring.in.action.service.BaseService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements BaseService<User>, UserDetailsService {
@@ -99,12 +91,9 @@ public class UserServiceImpl implements BaseService<User>, UserDetailsService {
         return user;
     }
 
-//    @Transactional
     public List<UserRole> findUserRolesByUserId(Long userId) {
         return userRoleRepository.findByUserIdWithUser(userId);
     }
 
-//    public List<UserRole> findUserRoles(String username){
-//        return userRepository.findAllByUsername(username);
-//    }
+
 }
