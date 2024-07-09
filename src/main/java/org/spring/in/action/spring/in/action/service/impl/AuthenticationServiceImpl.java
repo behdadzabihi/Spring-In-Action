@@ -26,9 +26,6 @@ public class AuthenticationServiceImpl {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-//    @Autowired
-//    private BCryptPasswordEncoder bCryptPasswordEncoder; // Inject the BCryptPasswordEncoder
-
 
     public String generateToken(String username,String password) throws Exception {
         User user = userService.findByUsername(username);
@@ -57,4 +54,8 @@ public class AuthenticationServiceImpl {
         return passwordEncoder.matches(plainTextPassword, hashedPassword);
     }
 
+    public Boolean validateToken(String token) {
+        String username=jwtTokenUtil.getUsernameFromToken(token);
+        return jwtTokenUtil.validateToken(token,username);
+    }
 }

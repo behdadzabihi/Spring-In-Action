@@ -54,6 +54,21 @@ public class User implements UserDetails {
   private List<UserRole> userRoles;
 
 
+  @Override
+  public String toString() {
+    return "User{" +
+            "id=" + id +
+            ", username='" + username + '\'' +
+            ", password='" + password + '\'' +
+            ", fullname='" + fullname + '\'' +
+            ", street='" + street + '\'' +
+            ", city='" + city + '\'' +
+            ", state='" + state + '\'' +
+            ", zip='" + zip + '\'' +
+            ", phoneNumber='" + phoneNumber + '\'' +
+            ", userRoles=" + userRoles +
+            '}';
+  }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

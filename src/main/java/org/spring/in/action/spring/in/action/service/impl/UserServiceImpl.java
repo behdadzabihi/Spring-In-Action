@@ -32,10 +32,8 @@ public class UserServiceImpl implements BaseService<User>, UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private UserRoleServiceImpl userRoleService;
-
-    @Autowired
     UserRoleRepository userRoleRepository;
+
 
     @Override
     public User save(User user) {
@@ -94,6 +92,4 @@ public class UserServiceImpl implements BaseService<User>, UserDetailsService {
     public List<UserRole> findUserRolesByUserId(Long userId) {
         return userRoleRepository.findByUserIdWithUser(userId);
     }
-
-
 }

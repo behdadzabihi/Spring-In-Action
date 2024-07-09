@@ -18,11 +18,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("/api/user")
 @AllArgsConstructor
 public class UserController {
 
     private static final Logger log = LogManager.getLogger(UserController.class);
+
     private  UserServiceImpl userService;
 
     private UserMapper  userMapper;

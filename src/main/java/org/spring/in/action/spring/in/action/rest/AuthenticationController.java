@@ -21,4 +21,10 @@ public class AuthenticationController {
         return ResponseEntity.ok(token);
     }
 
+    @PostMapping("/validate")
+    public ResponseEntity<Boolean> validateToken(@RequestParam String token) {
+        Boolean valid = authenticationService.validateToken(token);
+        return ResponseEntity.ok(valid);
+    }
+
 }
